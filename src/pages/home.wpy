@@ -43,7 +43,9 @@
     -->
     <!--发现好商品模块-->
     <discover :list.sync="discoverList"></discover>
+    <!--
     <view class="recommend-title">商品推荐</view>
+    -->
     <!--加载更多时动画-->
     <bottomLoadMore :show.sync="showLoading" message="正在加载"></bottomLoadMore>
     <!--暂无数据显示-->
