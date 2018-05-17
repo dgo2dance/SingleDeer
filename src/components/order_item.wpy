@@ -1,4 +1,4 @@
-<!--订单列表模块-->
+<!--频道列表模块-->
 <template>
 <view class="order_item">
 <repeat for="{{orderList}}">

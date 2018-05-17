@@ -3,8 +3,8 @@ import {
 } from '../utils/wxRequest';
 
 let env = "-test" //-dev 或者 -test
-const apiMall = 'https://sujiefs.com/'
-//const apiMall = 'https://api.tangxinmao.com'
+//const apiMall = 'https://sujiefs.com/'
+const apiMall = 'http://localhost:8080'
 
 /**
  * 获取发现好商品接口
@@ -142,7 +142,7 @@ const childGoodsCatetoryList = (params) => wxRequest(params, apiMall + '/api/mal
 //商品分类--end
 
 //查询广告列表
-const getAdList = (params) => wxRequest(params, apiMall + '/api/adverts/list');
+const getAdList = (params) => wxRequest(params, apiMall + '/org/advert/list');
 
 module.exports = {
   hostGoodsList,
