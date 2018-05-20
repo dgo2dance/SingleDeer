@@ -25,6 +25,18 @@
   </view>
 
 
+  <view wx:if="{{showModel}}" class="model">
+    <view class="modelTitle">
+      获取微信授权信息
+    </view>
+    <view class="modelBody">微信登录需要获取您的用户信息，请前往设置</view>
+    <view class="btns">
+      <button open-type="getUserInfo" class="agree" bindgetuserinfo="agreeGetUser" lang="zh_CN">去设置</button>
+    </view>
+  </view>
+  <view wx:if="{{showModel}}" class="mask"></view>
+  <!-- 自定义弹框结束 -->
+
     <!--tab模块-->
   <view class="swiper-tab-pd">
     <tab @currentTab.user="getCurrentTab" :tabList.sync="tabList" :currentTab.sync="currentTab"></tab>
@@ -48,9 +60,12 @@ import Bombscreen from '../components/bomb_screen'
 import OrderItem from '../components/order_item'
 import BottomLoadMore from "../components/common/bottomLoadMore"
 import Placeholder from "../components/common/placeholder"
+import 'wepy-async-function'
+
 import {
   SYSTEM_INFO,
-  USER_SPECICAL_INFO
+  USER_SPECICAL_INFO,
+  USER_INFO
 } from '../utils/constant';
 export default class Home extends wepy.page {
   config = {
@@ -91,7 +106,7 @@ export default class Home extends wepy.page {
     is_show_alert: true,
     winHeight: 0,
     totalCount: 0,
-    tabList: ["全部频道", "我的频道"],
+    tabList: ["全部频道test", "我的频道11"],
     orderList: [],
     currentPage: 1,
     is_empty: false,
@@ -108,7 +123,8 @@ export default class Home extends wepy.page {
     backrdersCount : 0,
     //待收货
     shippedCount : 0,
-    receiveFlg : 0
+    receiveFlg : 0,
+    showModel:false
 
   }
 
@@ -188,17 +204,65 @@ export default class Home extends wepy.page {
     const json = await api.getAdList({
       query: {}
     });
+
+    console.log("---getAdList----");
+
     console.log(json);
     if (json.data.code == 0) {
       this.adList = json.data.data;
       this.$apply();
     } else {}
   }
+
+
   onLoad() {
     let that = this;
     this.discoverList = [];
    //  that.getDiscoverList();
     this.getAdList();
+
+    console.log("getuser");
+
+    wx.login({
+      success: res => {
+        
+        //wx.getuserinfo接口不再支持
+        wx.getSetting({
+          success: (res) => {
+            //判断用户已经授权。不需要弹框
+            if(!res.authSetting['scope.userInfo']){
+              that.setData({
+                showModel: true
+              })
+            }else{//没有授权需要弹框
+              that.setData({
+                showModel: false
+              })
+              wx.showLoading({
+                title: '加载中...'
+              })
+         //     that.getOP(app.globalData.userInfo)
+            }
+          },
+          fail: function () {
+            wx.showToast({
+              title: '系统提示:网络错误',
+              icon: 'warn',
+              duration: 1500,
+            })
+          }
+        })
+      },
+      fail:function () {
+        wx.showToast({
+          title:'系统提示:网络错误',
+          icon: 'warn',
+          duration: 1500,
+        })
+      }
+    });
+  
+
 
     // that.getMyOrder();
     //设置滚动高度
@@ -283,12 +347,37 @@ export default class Home extends wepy.page {
       that.currentTab = e.detail.current;
       console.log("change tab...." + e.detailcurrent);
       that.$apply();
+    },
+
+  //获取用户信息新接口
+  agreeGetUser:function (e) {
+    //设置用户信息本地存储
+    try {
+     //   let c = await wepy.getUserInfo();
+        wepy.setStorageSync(USER_INFO, e.detail.userInfo);
+
+
+        //存储系统信息 
+        let systemInfo = wepy.getSystemInfoSync();
+        wepy.setStorageSync(SYSTEM_INFO, systemInfo);
+
+    } catch (e) {
+      wx.showToast({
+        title: '系统提示:网络错误',
+        icon: 'warn',
+        duration: 1500,
+      })
     }
+    wx.showLoading({
+      title:'加载中...'
+    })
+    let that = this
+    that.setData({
+      showModel:false
+    })
+   //  that.getOP(e.detail.userInfo)
+  },
 
-
-
-  }
-  events = {}
 
   //加载更多
   onReachBottom() {
@@ -326,9 +415,14 @@ export default class Home extends wepy.page {
     } else {
       that.showLoading = false;
     }
-  };
+  }
+
+  }
+  events = {}
+
 
 }
+
 
 </script>
 <style lang="less">
@@ -390,6 +484,47 @@ export default class Home extends wepy.page {
   padding: 40rpx 0;
   text-align: center;
   color: #333;
+}
+
+.mask {
+width: 100%;
+height: 100%;
+position: fixed;
+top: 0;
+left: 0;
+z-index: 1000;
+background: #000;
+opacity: 0.5;
+overflow: hidden;
+}
+
+.model {
+width: 650rpx;
+overflow: hidden;
+position: fixed;
+top: 50%;
+left: 0;
+z-index: 1001;
+background: #FAFAFA;
+margin: -150px 50rpx 0 50rpx;
+border-radius: 3px;
+}
+.modelTitle{
+padding:15px;
+font: 20px "microsoft yahei";
+text-align: center;
+}
+.modelBody {
+height: 140px;
+overflow-y: scroll; 
+}
+
+.agree{
+padding: 10px;
+font: 20px "microsoft yahei";
+text-align: center;
+border-top: 1px solid #E8E8EA;
+color: #3CC51F;
 }
 
 </style>
