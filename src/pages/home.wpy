@@ -24,14 +24,13 @@
     
   </view>
 
-
   <view wx:if="{{showModel}}" class="model">
     <view class="modelTitle">
       获取微信授权信息
     </view>
-    <view class="modelBody">微信登录需要获取您的用户信息，请前往设置</view>
+    <view class="modelBody">微信登录需要获取您的用户信息，请登录</view>
     <view class="btns">
-      <button open-type="getUserInfo" class="agree" bindgetuserinfo="agreeGetUser" lang="zh_CN">去设置</button>
+      <button open-type="getUserInfo" class="agree" bindgetuserinfo="agreeGetUser" lang="zh_CN">登录/注册</button>
     </view>
   </view>
   <view wx:if="{{showModel}}" class="mask"></view>
@@ -61,12 +60,13 @@ import OrderItem from '../components/order_item'
 import BottomLoadMore from "../components/common/bottomLoadMore"
 import Placeholder from "../components/common/placeholder"
 import 'wepy-async-function'
-
 import {
   SYSTEM_INFO,
   USER_SPECICAL_INFO,
-  USER_INFO
+  USER_INFO,
+  USER_CODE
 } from '../utils/constant';
+
 export default class Home extends wepy.page {
   config = {
     navigationBarTitleText: '独鹿交友',
@@ -126,6 +126,13 @@ export default class Home extends wepy.page {
     receiveFlg : 0,
     showModel:false
 
+  }
+
+
+  globalData = {
+    userInfo: null,
+    appid: 'wx225f75e64eddaddd',
+    secret: '8054a0cc597e0c630a2025724b4e9c11',
   }
 
 
@@ -226,10 +233,11 @@ export default class Home extends wepy.page {
     wx.login({
       success: res => {
         
+         wepy.setStorageSync(USER_CODE, res);
         //wx.getuserinfo接口不再支持
         wx.getSetting({
           success: (res) => {
-            //判断用户已经授权。不需要弹框
+            //判断用户没有授权。需要弹框
             if(!res.authSetting['scope.userInfo']){
               that.setData({
                 showModel: true
@@ -241,7 +249,7 @@ export default class Home extends wepy.page {
               wx.showLoading({
                 title: '加载中...'
               })
-         //     that.getOP(app.globalData.userInfo)
+   //           that.getOP(app.globalData.userInfo)
             }
           },
           fail: function () {
@@ -353,20 +361,44 @@ export default class Home extends wepy.page {
   agreeGetUser:function (e) {
     //设置用户信息本地存储
     try {
-     //   let c = await wepy.getUserInfo();
+
         wepy.setStorageSync(USER_INFO, e.detail.userInfo);
-
-
         //存储系统信息 
         let systemInfo = wepy.getSystemInfoSync();
         wepy.setStorageSync(SYSTEM_INFO, systemInfo);
 
-    } catch (e) {
-      wx.showToast({
-        title: '系统提示:网络错误',
-        icon: 'warn',
-        duration: 1500,
-      })
+        let userCode = wepy.getStorageSync(USER_CODE) || {};
+        let code = userCode.code;
+        let c = wepy.getStorageSync(USER_INFO) || {};
+
+        if(code){
+          let d = this.globalData; //这里存储了appid、secret、token串    
+          let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + code + '&grant_type=authorization_code';
+
+           wx.request({  
+              url: url,  
+              header: {  
+                  'content-type': 'application/json'  
+              },  
+              success: function(res) {  
+                let obj = {};
+                obj.openid = res.data.openid;
+                obj.expires_in = Date.now() + res.data.expires_in;
+
+               //存储openid 
+                wepy.setStorageSync(USER_SPECICAL_INFO, obj);
+
+              }  
+            });
+          }
+
+
+      } catch (e) {
+        wx.showToast({
+          title: '系统提示:网络错误',
+          icon: 'warn',
+          duration: 1500,
+        })
     }
     wx.showLoading({
       title:'加载中...'
@@ -375,7 +407,7 @@ export default class Home extends wepy.page {
     that.setData({
       showModel:false
     })
-   //  that.getOP(e.detail.userInfo)
+  //    that.getOP(e.detail.userInfo)
   },
 
 
@@ -487,44 +519,45 @@ export default class Home extends wepy.page {
 }
 
 .mask {
-width: 100%;
-height: 100%;
-position: fixed;
-top: 0;
-left: 0;
-z-index: 1000;
-background: #000;
-opacity: 0.5;
-overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
 }
 
 .model {
-width: 650rpx;
-overflow: hidden;
-position: fixed;
-top: 50%;
-left: 0;
-z-index: 1001;
-background: #FAFAFA;
-margin: -150px 50rpx 0 50rpx;
-border-radius: 3px;
+  width: 650rpx;
+  overflow: hidden;
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: 1001;
+  background: #FAFAFA;
+  margin: -150px 50rpx 0 50rpx;
+  border-radius: 3px;
 }
 .modelTitle{
-padding:15px;
-font: 20px "microsoft yahei";
-text-align: center;
+  padding:15px;
+  font: 20px "microsoft yahei";
+  text-align: center;
 }
+
 .modelBody {
-height: 140px;
-overflow-y: scroll; 
+  height: 140px;
+  overflow-y: scroll; 
 }
 
 .agree{
-padding: 10px;
-font: 20px "microsoft yahei";
-text-align: center;
-border-top: 1px solid #E8E8EA;
-color: #3CC51F;
+  padding: 10px;
+  font: 20px "microsoft yahei";
+  text-align: center;
+  border-top: 1px solid #E8E8EA;
+  color: #3CC51F;
 }
 
 </style>

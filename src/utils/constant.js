@@ -16,6 +16,13 @@ export const USER_INFO = "userInfo";
  */
 export const SYSTEM_INFO = "systemInfo";
 
+/**
+*
+*code
+*/
+export const USER_CODE = "code";
+
+
 
 export const ADDRESS_ID = "addressId";
 
