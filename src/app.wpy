@@ -73,7 +73,7 @@ export default class extends wepy.app {
         "text": "频道"
       }, {
         "pagePath": "pages/shop_cart",
-        "text": "增加",
+        "text": "创建",
         "iconPath": "images/add.png",
         "selectedIconPath": "images/add_select.png"
       }, {

@@ -106,17 +106,14 @@ export default class Home extends wepy.page {
     is_show_alert: true,
     winHeight: 0,
     totalCount: 0,
-    tabList: ["全部频道test", "我的频道11"],
+    tabList: ["全部频道", "我的频道"],
     orderList: [],
     currentPage: 1,
     is_empty: false,
     orderStatus: "",
     currentTab: 0,
     flag: 0,
-    //是否显示 底部loading
-    showLoading: true,
-    //防止重复加载
-    preventRepeatReuqest: false,
+    
     //待付款
     pendingPayCount : 0,
     //待发货
@@ -128,13 +125,11 @@ export default class Home extends wepy.page {
 
   }
 
-
   globalData = {
     userInfo: null,
     appid: 'wx225f75e64eddaddd',
     secret: '8054a0cc597e0c630a2025724b4e9c11',
   }
-
 
   async getMyOrder(currentPage, size,refresh) {
     console.log("refresh值："+refresh);
@@ -143,25 +138,29 @@ export default class Home extends wepy.page {
     console.log("orderStatus值" + that.orderStatus);
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
     let openId = userSpecialInfo.openid;
-    const json = await api.getMyOrderList({
+    const json = await api.getOrg({
       query: {
         openId: openId,
-        orderStatus: that.orderStatus,
-        receiveFlg : that.receiveFlg,
         page: currentPage || 1,
         size: size || 10,
-        type: 1 //正常单
+
       }
     });
+    console.log("myorder:"+JSON.stringify(json));
+
     if (json.data.code == 0) {
-      console.log("json.data.list");
-      console.log(json.data.list);
+    console.log("myorder:refresh"+refresh);
+
+    console.log("myorder:records"+JSON.stringify(json.data.data.records));
+
       if (refresh) {
-        that.orderList = json.data.list;
+      console.log("myorder:records-001"+json.data.data.records);
+
+        that.orderList = json.data.records;
       } else {
-        that.orderList = [...that.orderList, ...json.data.list];
+        that.orderList = [...that.orderList, ...json.data.data.records];
       }
-      that.page_total = json.data.page_total;
+      that.page_total = json.data.totalPages;
       that.totalCount = json.data.totalCount;
       console.log("条目数：" + that.totalCount);
       if (json.data.page_total == 0) {
@@ -170,7 +169,7 @@ export default class Home extends wepy.page {
       } else {
         that.is_empty = false;
       }
-      that.getMyOrderSize();
+  //    that.getMyOrderSize();
       console.log("list返回数据");
       console.log(that.orderList);
     } else {
@@ -212,24 +211,79 @@ export default class Home extends wepy.page {
       query: {}
     });
 
-    console.log("---getAdList----");
+    console.log("getAdList："+JSON.stringify(json));
 
-    console.log(json);
     if (json.data.code == 0) {
       this.adList = json.data.data;
       this.$apply();
     } else {}
   }
 
+  // 登录服务器；
+  async login() {
+    let that = this;
+    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
+    let userInfo = wepy.getStorageSync(USER_INFO) || {};
+    let openId = userSpecialInfo.openid;
+     const json = await api.login({
+      query: {
+        openid:openId,
+        nickname:userInfo.nickName,
+        gender:parseInt(userInfo.gender),
+        avatarUrl:userInfo.avatarUrl,
+        city:userInfo.city,
+        provience:userInfo.province
+      },
+      method:"POST"
+    });
+     console.log("login"+JSON.stringify(json));
 
+        if(json.data.code == 0){
+          console.log("登录成功");
+
+        }
+
+
+  }
+
+     //登录 获取openid, 并登录服务器
+   getLogin() {
+        let userCode = wepy.getStorageSync(USER_CODE) || {};
+        let code = userCode.code;
+        let c = wepy.getStorageSync(USER_INFO) || {};
+        if(code){
+          let d = this.globalData; //这里存储了appid、secret、token串    
+          let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + code + '&grant_type=authorization_code';
+
+           wx.request({  
+              url: url,  
+              header: {  
+                  'content-type': 'application/json'  
+              },  
+              success: function(res) {  
+                let obj = {};
+                obj.openid = res.data.openid;
+                obj.expires_in = Date.now() + res.data.expires_in;
+               //存储openid 
+                wepy.setStorageSync(USER_SPECICAL_INFO, obj);
+              }  
+            });
+
+         }
+
+         this.login();
+         wx.hideLoading();
+
+   }
+
+   // 登录时加载项
   onLoad() {
     let that = this;
     this.discoverList = [];
    //  that.getDiscoverList();
     this.getAdList();
 
-    console.log("getuser");
-
+   //  登录获取用户信息
     wx.login({
       success: res => {
         
@@ -249,7 +303,7 @@ export default class Home extends wepy.page {
               wx.showLoading({
                 title: '加载中...'
               })
-   //           that.getOP(app.globalData.userInfo)
+              that.getLogin();
             }
           },
           fail: function () {
@@ -269,10 +323,9 @@ export default class Home extends wepy.page {
         })
       }
     });
-  
 
-
-    // that.getMyOrder();
+    console.log("test----");
+    this.getMyOrder();
     //设置滚动高度
     let systemInfo = wepy.getStorageSync(SYSTEM_INFO);
     that.winHeight = systemInfo.windowHeight;
@@ -313,8 +366,6 @@ export default class Home extends wepy.page {
     closeAlert() {
       tip.alert('关闭');
     },
-
-
     getCurrentTab(cur, evt) {
       this.currentPage = 1;
       this.page_total = 0;
@@ -357,6 +408,7 @@ export default class Home extends wepy.page {
       that.$apply();
     },
 
+
   //获取用户信息新接口
   agreeGetUser:function (e) {
     //设置用户信息本地存储
@@ -366,32 +418,6 @@ export default class Home extends wepy.page {
         //存储系统信息 
         let systemInfo = wepy.getSystemInfoSync();
         wepy.setStorageSync(SYSTEM_INFO, systemInfo);
-
-        let userCode = wepy.getStorageSync(USER_CODE) || {};
-        let code = userCode.code;
-        let c = wepy.getStorageSync(USER_INFO) || {};
-
-        if(code){
-          let d = this.globalData; //这里存储了appid、secret、token串    
-          let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + code + '&grant_type=authorization_code';
-
-           wx.request({  
-              url: url,  
-              header: {  
-                  'content-type': 'application/json'  
-              },  
-              success: function(res) {  
-                let obj = {};
-                obj.openid = res.data.openid;
-                obj.expires_in = Date.now() + res.data.expires_in;
-
-               //存储openid 
-                wepy.setStorageSync(USER_SPECICAL_INFO, obj);
-
-              }  
-            });
-          }
-
 
       } catch (e) {
         wx.showToast({
@@ -403,11 +429,11 @@ export default class Home extends wepy.page {
     wx.showLoading({
       title:'加载中...'
     })
-    let that = this
+    let that = this;
     that.setData({
       showModel:false
-    })
-  //    that.getOP(e.detail.userInfo)
+    });
+      that.getLogin();
   },
 
 
@@ -450,7 +476,13 @@ export default class Home extends wepy.page {
   }
 
   }
-  events = {}
+  events = {
+
+     refreshOrderList(msg){
+      console.log("msg值:"+msg);
+      this.getMyOrder(1,10,1);
+    }
+  }
 
 
 }

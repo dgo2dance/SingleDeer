@@ -12,11 +12,15 @@ const wxRequest = async(params = {}, url) => {
     let data = params.query || {};
     data.sign = SIGN;
     data.time = TIMESTAMP;
+    console.log("data"+JSON.stringify(data));
+    console.log("url:"+url);
+
     let res = await wepy.request({
         url: url,
         method: params.method || 'GET',
         data: data,
-        header: { 'Content-Type': 'application/json' },
+      //  header: { 'Content-Type': 'application/json' },
+         header: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
     });
     tip.loaded();
     return res;

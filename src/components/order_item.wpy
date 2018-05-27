@@ -3,56 +3,20 @@
 <view class="order_item">
 <repeat for="{{orderList}}">
   <view class="list" wx:key="index">
-    <navigator class="item_content" url="/pages/order_detail?orderNo={{item.orderNo}}">
-      <view class="order_list_top">
-        <view class="left">
-          <view class="title">订单号：
-            <text class="order_doc">{{item.orderNo}}</text>
-          </view>
-          <view class="title mt10">提交时间：
-            <text class="order_doc">{{item.createTime}}</text>
-          </view>
-        </view>
+    <navigator class="flex item" url="/pages/order_detail?orderNo={{item.orderNo}}">
 
-        <view class="order_state" wx:if="{{item.auditStatus==5}}">
-          审批中
-        </view>
-        <view class="order_state" wx:elif="{{item.auditStatus==-1}}"> 审批不通过 </view>
-        <view wx:else>
-          <text class="defult" wx:if="{{item.status==0}}">
-            <view class="order_state">待支付</view>
-          </text>
-          <view class="order_state" wx:if="{{item.status==0}}">待付款</view>
-          <view class="order_state" wx:if="{{item.status==2 || item.status==1}}">待收货</view>
-          <view class="order_state" wx:if="{{item.status==4}}">已完成</view>
-          <view class="order_state" wx:if="{{item.status==3}}">待评论</view>
-        </view>
-    </view>
 
-    <view class="order_list_center">
-      <shopItemList :list.sync="item.orderItemList"></shopItemList>
-    </view>
+            <view class="item_left">
+                <image src="{{item.imgPath}}"/>
+            </view>
+            <view class="flex_auto item_middle">
+                <view><text class="title">{{item.name}}</text></view>
+            </view>
+        <view class="navigator-arrow"></view>
+     
+
   </navigator>
-  <view class="order_list_footer">
-    <view class="reveiveMoney c333">应付款：
-      <text class="num">{{item.goodsPrices}}</text>
-    </view>
 
-    <view class="order_state" wx:if="{{item.auditStatus==5}}">
-    </view>
-    <view wx:elif="{{item.auditStatus==-1}}">
-      <view class="btn_group">
-        <view class="btn btn_del" @tap="delOrder" data-id="{{item.orderNo}}">删除订单</view>
-      </view>
-    </view>
-    <view wx:else>
-      <view class="btn_group">
-        <view class="btn btn_del" @tap="delOrder" data-id="{{item.orderNo}}" wx:if="{{item.status==0 || item.status==4}}">删除订单</view>
-        <view class="btn btn_pay" @tap="payMoney" data-id="{{item.orderNo}}" data-tradeno="{{item.payTradeNo}}" wx:if="{{item.status==0}}">立即付款</view>
-        <view class="btn btn_pay" @tap="completion" data-id="{{item.orderNo}}" wx:if="{{item.status==2 || item.status==1}}">确认收货</view>
-      </view>
-    </view>
-  </view>
 
   </view>
 </repeat>
@@ -175,10 +139,126 @@ export default class orderItem extends wepy.component {
   padding: 10rpx 0rpx;
   background: #f7f7f7;
   margin-bottom: 30rpx;
-  .title {
-    font-size: 26rpx;
-    color: #333;
-  }
+        view.text {
+          display: flex;
+          align-items: center;
+          position: relative;
+          padding: 10px 10px 10px 12px;
+          font-size: 15px;
+          color: #656565;
+      }
+
+      .list{
+         justify-content: flex-start;
+         display:flex;
+         flex-direction:row;
+
+      }
+
+      view.text:before {
+          position: absolute;
+          display: block;
+          content: ' ';
+          left: -5rpx;
+          width: 2rpx;
+          height: 100%;
+          background-color: #09bb07;
+      }
+
+      .line_flag {
+          width: 3rpx;
+          height: 100%;
+          height: 18rpx;
+          display: inline-block;
+          background-color: #09bb07;
+      }
+
+      view.text text {
+          margin-left: 10rpx;
+          line-height: 18rpx;
+      }
+
+      .item {
+          color: #787878;
+          border-bottom: 0px solid #eaeaea;
+          display:flex;
+          width:100%;
+      }
+
+      .item image {
+          display: block;
+          width: 120rpx;
+          height: 120rpx;
+          border-radius:0%;
+          margin: 10rpx;
+          background-color: orange;
+      }
+
+      .item_middle {
+          flex: 1;
+          margin-left: 10rpx;
+          padding-top: 5rpx;
+          overflow: hidden;
+      }
+
+       .item_left {
+          margin-left: 10rpx;
+          padding-top: 5rpx;
+          overflow: hidden;
+      }
+
+      .item_middle .title {
+          font-size: 16px;
+          color: #333;
+      }
+      .item_middle .sub_title {
+          font-size: 14rpx;
+          color: #666;
+          margin: 2rpx 0rpx;
+      }
+
+      .item_middle .actor {
+          font-size: 14rpx;
+          color: #666;
+          margin: 2rpx 0rpx;
+      }
+
+      .item_right .score {
+          font-size: 12rpx;
+          color: #cf616a;
+      }
+
+      .item_right .action {
+          margin-top: 30rpx;
+          border: 1px solid #29cc6d;
+          border-radius: 2rpx;
+          color: #29cc6d;
+          display: inline-block;
+          padding: 2rpx 4rpx;
+          font-size: 12rpx;
+          line-height: 16rpx;
+          text-align: center;
+      }
+
+      .navigator-arrow {
+          padding-right: 26rpx;
+          position: relative;
+        }
+        .navigator-arrow:after {
+          content: " ";
+          display: inline-block;
+          height: 18rpx;
+          width: 18rpx;
+          border-width: 2rpx 2rpx 0 0;
+          border-color: #888888;
+          border-style: solid;
+          transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+          position: absolute;
+          top: 50%;
+          margin-top: -8rpx;
+          right: 28rpx;
+        }
+
   .order_doc {
     font-size: 26rpx;
     color: #808080;

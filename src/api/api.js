@@ -17,6 +17,10 @@ const getDiscoverList = (params) => wxRequest(params, apiMall + '/goods/list?cat
 const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/api/wechat/jscode2session");
 const user2session = (params) => wxRequest(params, apiMall + "/api/wechat/user2session?jsoncallback=?");
 
+const login = (params) => wxRequest(params, apiMall + "/login");
+
+const getOrg = (params) => wxRequest(params,apiMall + "/org/list");
+
 //商品接口---begin
 //首页发现商品接口
 const hostGoodsList = (params) => wxRequest(params, apiMall + '/api/home/hostGoodsList');
@@ -177,5 +181,7 @@ module.exports = {
   goodsIsFavorite,
   getMyOrderSize,getPayOrderDetail,
   getAdList,
-  getSignDate
+  getSignDate,
+  login,
+  getOrg
 }
