@@ -1,0 +1,201 @@
+
+<template>
+
+    <view class="containers">
+	    <view class="img" @tab="changeimg">
+	   <image src="http://os11g3fl4.bkt.clouddn.com/WechatIMG12.jpeg"> </image>
+	   	</view>
+
+   <!--照片上传区域-->
+      <ImageUploader :pictures.sync="pictures"/>
+
+
+	   	<view class="title">
+	   		          <input type="text" name="title" >
+
+	   	</view>
+	   	 	<view class="intro">
+	   			   		          <input type="text" name="intro" >
+
+	   	</view>
+
+
+
+  		</view>
+
+</template>
+<script>
+import wepy from 'wepy';
+import api from '../api/api';
+import tip from '../utils/tip'
+import Tab from '../components/tab'
+import Discover from '../components/discover'
+import Bombscreen from '../components/bomb_screen'
+import OrderItem from '../components/order_item'
+import BottomLoadMore from "../components/common/bottomLoadMore"
+import Placeholder from "../components/common/placeholder"
+import 'wepy-async-function'
+import ImageUploader from '../components/common/image_uploader';
+
+import {
+  SYSTEM_INFO,
+  USER_SPECICAL_INFO,
+  USER_INFO,
+  USER_CODE
+} from '../utils/constant';
+
+export default class createChannelSecond extends wepy.page {
+
+	   def = {
+      input: {
+        status: true
+      },
+      details: [],
+      pictures: [],
+      skuList: [{
+        sku: '',
+        price: '',
+        stock: ''
+      }],
+      mode: 'create',
+      goodsId: null,
+      innerCategories: [],
+      init: false,
+      isInnerDisplay: 'false'
+    };
+    data = {...this.def};
+
+  config = {
+    navigationBarTitleText: '独鹿交友',
+  };
+  components = {
+    discover: Discover,
+    bottomLoadMore: BottomLoadMore,
+    placeholder: Placeholder,
+    bombscreen: Bombscreen,
+    tab: Tab,
+    orderItem: OrderItem,
+    ImageUploader: ImageUploader,
+  };
+ 
+
+   // 登录时加载项
+  onLoad() {
+
+  }
+
+ computed = {
+
+  }
+
+  methods = {
+  	 createChannelNofee() {
+      wepy.navigate({
+        url: "/pages/createChannel?fee=nofee"
+      })
+    },
+  	 createChannelfee() {
+      wepy.navigate({
+        url: "/pages/createChannel?fee=fee"
+      })
+    }
+
+
+  }
+
+  events = {
+
+  }
+
+
+}
+
+
+</script>
+<style lang="less">
+
+.containers {
+
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		display:flex;
+		flex-direction:column;
+		align-items:center;/*垂直居中*/
+		justify-content: center;/*水平居中*/
+
+		background-color:#ffffff;
+		.item{
+				display:flex;
+				height:100%;
+				width:100%;
+				align-items:center;/*垂直居中*/
+
+
+			}
+			/*
+		 .button:before, .button2:before {
+			content: "";
+			width: 200rpx;
+			height: 200rpx;
+			display: block;
+			z-index: -1;
+			position: relative;
+			background: #ddd;
+			left: -15rpx;
+			top: -100rpx;
+			border-radius: 100rpx;
+		}
+		*/
+		.button:after, .button2:after {
+			content: "免费";
+			color: #09F;
+			font-size: 38rpx;
+			width: 100%;
+			height: 100%;
+			line-height: 200rpx;
+			text-align: center;
+			position: absolute;
+			top: 0;
+			display: block;
+		}
+		.button2:after {
+			content: "付费";
+			word-spacing: 38rpx;
+			color: #A0D989;
+		}
+		.button, .button2 {
+			float: left;
+			margin: 50px auto;
+			cursor: pointer;
+			height: 200rpx;
+			width: 200rpx;
+			display: flex;
+			position: relative;
+			color: #eeeeee;
+			text-align: center;
+			line-height: 200rpx;
+			border-radius: 100rpx;
+			transition: all 0.5s ease-in;
+			border:1px solid #888888;
+		}
+		.button {
+			float: left;
+		}
+		.button2 {
+			float: right;
+		}
+		.problem{
+			display:flex;
+			justify-content:center;
+			height:120rpx;
+		}
+		.title{
+			flex-direction:column-reverse;
+			font-size:38rpx;
+
+
+		}
+}
+
+</style>

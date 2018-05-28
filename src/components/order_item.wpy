@@ -208,7 +208,7 @@ export default class orderItem extends wepy.component {
       }
 
       .item_middle .title {
-          font-size: 16px;
+          font-size: 38rpx;
           color: #333;
       }
       .item_middle .sub_title {

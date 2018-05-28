@@ -8,6 +8,9 @@ module.exports = {
     less: {
       compress: true
     },
+     sass: {
+      outputStyle: 'compact'
+    },
     babel: {
       sourceMap: true,
       presets: [

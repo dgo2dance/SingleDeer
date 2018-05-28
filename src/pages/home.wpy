@@ -156,12 +156,12 @@ export default class Home extends wepy.page {
       if (refresh) {
       console.log("myorder:records-001"+json.data.data.records);
 
-        that.orderList = json.data.records;
+        that.orderList = json.data.data.records;
       } else {
         that.orderList = [...that.orderList, ...json.data.data.records];
       }
-      that.page_total = json.data.totalPages;
-      that.totalCount = json.data.totalCount;
+      that.page_total = json.data.data.totalPages;
+      that.totalCount = json.data.data.totalCount;
       console.log("条目数：" + that.totalCount);
       if (json.data.page_total == 0) {
         //暂无数据
