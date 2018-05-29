@@ -7,22 +7,25 @@
 
   <!-- 照片轮播区域-->
   <view class="swiper-box" wx:if="{{pictures.length > 0}}" @tap="manage">
-    <swiper class="{{otherClass}}" indicator-dots="true" indicator-active-color="#EEE" >
+    <swiper class="{{otherClass}}" indicator-active-color="#EEE" >
       <swiper-item wx:for="{{pictures}}" wx:key="index" wx:index="index">
         <image mode="aspectFill" src="{{item.url}}"></image>
       </swiper-item>
     </swiper>
-    <image class="photo-btn icon-xl" style="top: {{top}}rpx;"  @tap.stop="photo" src="/images/icons/camera.png"></image>
+    <image class="photo-btn icon-xl" style="top: {{top}}rpx;" src="/images/icons/camera.png"></image>
   </view>
 
   <!--上传管理器-->
   <SliderPanel :display.sync="isPanelDisplay" >
     <view slot="title">编辑图片</view>
     <view slot="content" class="manage-box column">
+      <image class="photo-btn icon-xl" style="top: {{top}}rpx;"  @tap.stop="photo" src="/images/icons/camera.png"></image>
 
       <view class="item-box row-between" wx:for="{{pictures}}" wx:key="index" wx:index="index">
+
         <!--展现区域-->
         <view class="item-header-box">
+
           <text class="lg mr20">{{index + 1}}</text>
           <image class="icon-xl" src="{{item.url}}"></image>
           <text class="ml20" wx:if="{{index == 0}}">(封面)</text>
@@ -171,6 +174,22 @@
       }
     }
   }
+
+  .icon-lg {
+height:30px;
+width:30px;
+vertical-align:middle;
+
+}
+
+
+image {
+width:400rpx;
+height:400rpx;
+display:inline-block;
+overflow:hidden;
+
+}
 
   .manage-box{
     padding-top: 10rpx;

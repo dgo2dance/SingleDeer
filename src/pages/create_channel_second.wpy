@@ -2,10 +2,11 @@
 <template>
 
     <view class="containers">
+    	<!--
 	    <view class="img" @tab="changeimg">
 	   <image src="http://os11g3fl4.bkt.clouddn.com/WechatIMG12.jpeg"> </image>
 	   	</view>
-
+-->
    <!--照片上传区域-->
       <ImageUploader :pictures.sync="pictures"/>
 
@@ -15,7 +16,7 @@
 
 	   	</view>
 	   	 	<view class="intro">
-	   			   		          <input type="text" name="intro" >
+	   			   	   <input type="text" name="intro" >
 
 	   	</view>
 
@@ -51,7 +52,7 @@ export default class createChannelSecond extends wepy.page {
         status: true
       },
       details: [],
-      pictures: [],
+      pictures: [{url:'http://os11g3fl4.bkt.clouddn.com/WechatIMG12.jpeg'}],
       skuList: [{
         sku: '',
         price: '',
