@@ -26,7 +26,32 @@ const wxRequest = async(params = {}, url) => {
     return res;
 };
 
+const wxUpload = async(params,url) => {
+    tip.loading();
+    console.log("wxupload---"+params);
+ //   let data = params.query || {};
+    // data.sign = SIGN;
+    // data.time = TIMESTAMP;
+    // console.log("data---wxUpload"+JSON.stringify(data));
+    console.log("url---wxUpload:"+url);
+
+    let res = await wepy.uploadFile({
+        url: url,
+        filePath: params,
+        name: 'image',
+        method: 'POST',
+        header: { "Content-Type": "multipart/form-data" }
+
+    });
+    tip.loaded();
+    return res;
+};
+
+
+
+
 
 module.exports = {
-    wxRequest
+    wxRequest,
+    wxUpload
 }

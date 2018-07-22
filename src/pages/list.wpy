@@ -1,0 +1,106 @@
+
+<template>
+       <view class="container">
+
+          <view class="item_left">
+                <image src="{{item.imgPath}}"/>
+            </view>
+            <view class="flex_auto item_middle">
+                <view><text class="title">{{item.name}}</text></view>
+            </view>
+
+
+        </view>
+
+    <view class="swiper-tab-pd">
+    <tab @currentTab.user="getCurrentTab" :tabList.sync="tabList" :currentTab.sync="currentTab"></tab>
+  </view>
+  <scroll-view scroll-y="true" class="swiper-item-box" style="height:{{winHeight - 31}}px" bindscrolltolower="onReachBottom">
+   <singleItem :singleList.sync="singleList"></singleItem> 
+    <!--加载更多时动画-->
+    <bottomLoadMore :show.sync="showLoading" message="正在加载"></bottomLoadMore>
+    <!--暂无数据显示-->
+    <placeholder :show.sync="is_empty" message="暂无发现数据"></placeholder>
+  </scroll-view>
+
+
+
+</template>
+<script>
+import wepy from 'wepy';
+import api from '../api/api';
+import tip from '../utils/tip'
+import Tab from '../components/tab'
+import Discover from '../components/discover'
+import Bombscreen from '../components/bomb_screen'
+import SingleItem from '../components/single_item'
+import BottomLoadMore from "../components/common/bottomLoadMore"
+import Placeholder from "../components/common/placeholder"
+import 'wepy-async-function'
+import {
+  SYSTEM_INFO,
+  USER_SPECICAL_INFO,
+  USER_INFO,
+  USER_CODE
+} from '../utils/constant';
+
+export default class list extends wepy.page {
+  config = {
+    navigationBarTitleText: '独鹿交友',
+  }
+  components = {
+    discover: Discover,
+    bottomLoadMore: BottomLoadMore,
+    placeholder: Placeholder,
+    bombscreen: Bombscreen,
+    tab: Tab,
+    singleItem: SingleItem
+  }
+  data = {
+
+    singleList: [],
+    tabList: ["简介", "成员","讨论"],
+
+
+  }
+   // 登录时加载项
+  onLoad() {
+
+  }
+
+  computed = {}
+  methods = {
+  }
+  events = {
+
+     
+  }
+
+
+}
+
+
+</script>
+<style lang="less">
+
+  .constainer{
+  padding: 10rpx 0rpx;
+  background: #f7f7f7;
+
+  .item_left {
+        margin-left: 10rpx;
+        padding-top: 5rpx;
+        overflow: hidden;
+        height:300rpx;
+      }
+  image{
+      height:300rpx;
+
+  }
+
+  }
+
+
+
+
+</style>

@@ -1,4 +1,4 @@
-
+t
 <template>
 
     <view class="containers">
@@ -8,22 +8,31 @@
 	   	</view>
 -->
    <!--照片上传区域-->
+     <form bindsubmit="formSubmit" class="form">
+
       <ImageUploader :pictures.sync="pictures"/>
 
-
-	   	<view class="title">
-	   		          <input type="text" name="title" >
-
-	   	</view>
-	   	 	<view class="intro">
-	   			   	   <input type="text" name="intro" >
-
-	   	</view>
+	   	  <view class="weui-cell weui-cell_input">
+                    <view class="weui-cell__bd">
+                        <input class="weui-input" name="name" placeholder="请输入频道名称" style="height:4em;text-align:center;" auto-focus/>
+                    </view>
+          </view>
 
 
+     <view class="weui-cells weui-cells_after-title">
+                <view class="weui-cell">
+                    <view class="weui-cell__bd">
+                        <textarea class="weui-textarea" name="intro" placeholder="请输入频道介绍" />
+                    </view>
+                </view>
+            </view>
 
+   <view class="btn_box">
+      <button class="button type_red" formType="submit">提交</button>
+    </view>
+  </form>
   		</view>
-
+ 
 </template>
 <script>
 import wepy from 'wepy';
@@ -47,7 +56,7 @@ import {
 
 export default class createChannelSecond extends wepy.page {
 
-	   def = {
+	 def = {
       input: {
         status: true
       },
@@ -59,6 +68,7 @@ export default class createChannelSecond extends wepy.page {
         stock: ''
       }],
       mode: 'create',
+      orgImage: null,
       goodsId: null,
       innerCategories: [],
       init: false,
@@ -80,8 +90,75 @@ export default class createChannelSecond extends wepy.page {
   };
  
 
+   async createChannel(pictures,name,intro) {
+        let that = this;
+        let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
+        let openId = userSpecialInfo.openid;
+        console.log("openid:--"+openId);
+        console.log("pictures:--"+JSON.stringify(pictures));
+        console.log("name:--"+name);
+        console.log("intro:--"+intro);
+
+
+        const data = {
+          goodsDetails: [],
+          goodsSkuInfo: {},
+          goodsStocks: [],
+          images: []
+        };
+        tip.loading('保存中');
+        // 处理图片信息
+        for (let picture of pictures) {
+          if (picture.url.substring(0, 6) == 'wxfile' || picture.url.substring(0, 11) == 'http://tmp/') {
+          	   const url = `${this.baseUrl}/images`;
+			    // const param = {
+			    //   url,
+			    //   filePath,
+			    //   name: 'image'
+			    // };
+
+            const result = await api.image(picture.url);
+            console.log("return img"+JSON.stringify(result));
+            const image = JSON.parse(result.data);
+            console.log("return image"+JSON.stringify(image));
+
+            picture=image.data;
+            console.log("picture"+picture);
+            that.orgImage=picture
+          } else {
+            that.orgImage=picture
+          }
+        }
+        tip.loading('保存中', true);
+
+
+        const json = await api.createChannel({
+          query: {
+            createUserOpenid: openId,
+            imgPath:that.orgImage,
+            name:name,
+            intro:intro
+          }
+        });
+
+        if (json.data.code == 0) {
+          // that.list = json.data.list;
+          wepy.navigateBack();
+          console.log("绑定成功.....");
+
+          that.$apply();
+        } else {
+          tip.error(json.data.msg)
+        }
+        that.showLoading = false;
+      }
+
+
+
    // 登录时加载项
   onLoad() {
+
+
 
   }
 
@@ -90,32 +167,40 @@ export default class createChannelSecond extends wepy.page {
   }
 
   methods = {
-  	 createChannelNofee() {
-      wepy.navigate({
-        url: "/pages/createChannel?fee=nofee"
-      })
-    },
-  	 createChannelfee() {
-      wepy.navigate({
-        url: "/pages/createChannel?fee=fee"
-      })
+      formSubmit(e) {
+      let that = this;
+      let picture=that.pictures;
+      let name = e.detail.value.name;
+      let intro = e.detail.value.intro;
+      if (name == "") {
+        tip.alert("请输入频道名称");
+        return false;
+      }
+      if (intro == "") {
+        tip.alert("请输入频道介绍");
+        return false;
+      }
+      that.createChannel(picture,name,intro);
+      console.log('form发生了submit事件，携带数据为：', e.detail.value)
     }
-
 
   }
 
   events = {
-
-  }
+	}
 
 
 }
-
-
 </script>
 <style lang="less">
 
 .containers {
+
+	.form {
+		width:80%;
+		align-items:center;
+		}
+
 
 		position: fixed;
 		height: 100%;
@@ -147,7 +232,7 @@ export default class createChannelSecond extends wepy.page {
 			top: -100rpx;
 			border-radius: 100rpx;
 		}
-		*/
+		
 		.button:after, .button2:after {
 			content: "免费";
 			color: #09F;
@@ -191,10 +276,28 @@ export default class createChannelSecond extends wepy.page {
 			justify-content:center;
 			height:120rpx;
 		}
+		*/
+
 		.title{
 			flex-direction:column-reverse;
 			font-size:38rpx;
+			margin-top:100rpx;
+		}
 
+		.intro{
+			background-color:#ffffff;
+			width:100%;
+			height:300rpx;
+
+		}
+
+		.weui-cells_after-title {
+		width:90%;
+		}
+
+		textarea {
+
+		height:100px;
 
 		}
 }

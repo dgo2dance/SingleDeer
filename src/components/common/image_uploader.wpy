@@ -28,18 +28,18 @@
 
           <text class="lg mr20">{{index + 1}}</text>
           <image class="icon-xl" src="{{item.url}}"></image>
-          <text class="ml20" wx:if="{{index == 0}}">(封面)</text>
-          <text class="muted ml20" wx:else>(细节)</text>
+        <!--  <text class="ml20" wx:if="{{index == 0}}">(封面)</text>
+          <text class="muted ml20" wx:else>(细节)</text>. -->
         </view>
 
         <!-- 操作区域 -->
         <view class="item-footer-box">
           <image class="icon-lg" wx:if="{{index != 0}}" src="/images/icons/up-arrow.png" @tap="up({{index}})"></image>
           <image class="icon-lg" wx:if="{{index != pictures.length - 1}}" src="/images/icons/down-arrow.png" @tap="down({{index}})"></image>
-          <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image>
+        <!--  <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image> -->
         </view>
       </view>
-      <text class="muted sm mt10 ml20">提示：请点击按钮改变图片顺序，第一张图片为封面</text>
+      <!-- <text class="muted sm mt10 ml20">提示：请点击按钮改变图片顺序，第一张图片为封面</text> -->
     </view>
   </SliderPanel>
 
@@ -65,7 +65,7 @@
         default: '455'
       },
       maxSize: {
-        default: '5'
+        default: '1'
       }
     };
     data = {
@@ -75,6 +75,29 @@
     methods = {
       // 上传照片
       async photo() {
+        const size = this.pictures.length;
+        if (size >= 2) {
+          await Tips.alert('最多选择五张图片');
+          return;
+        }
+        const param = {
+          count: 2 - size,
+          sizeType: ['compressed']
+        };
+        const tempFilePaths = await WxUtils.chooseImage(param, this.maxSize);
+        const pictures = tempFilePaths.map(item => {
+          return {
+            temp: true,
+            url: item
+          }
+        });
+    //    this.pictures = this.pictures.concat(pictures);
+        this.pictures = pictures;
+        this.$apply();
+      },
+
+            // 上传照片
+      async photos() {
         const size = this.pictures.length;
         if (size >= 5) {
           await Tips.alert('最多选择五张图片');
@@ -94,6 +117,8 @@
         this.pictures = this.pictures.concat(pictures);
         this.$apply();
       },
+
+
       // 打开管理面板
       manage() {
         this.isPanelDisplay = 'true';

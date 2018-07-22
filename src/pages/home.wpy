@@ -69,7 +69,7 @@ import {
 
 export default class Home extends wepy.page {
   config = {
-    navigationBarTitleText: '独鹿交友',
+    navigationBarTitleText: '独鹿单身',
   }
   components = {
     discover: Discover,
@@ -106,7 +106,7 @@ export default class Home extends wepy.page {
     is_show_alert: true,
     winHeight: 0,
     totalCount: 0,
-    tabList: ["全部频道", "我的频道"],
+    tabList: ["全部清单", "我加入的","我创建的"],
     orderList: [],
     currentPage: 1,
     is_empty: false,
@@ -350,7 +350,7 @@ export default class Home extends wepy.page {
         console.log(res.target)
       }
       return {
-        title: '独鹿交友',
+        title: '独鹿单身',
         path: '/pages/home',
         success: function(res) {
           // 转发成功

@@ -4,7 +4,7 @@
  <navigator class="item" url="/pages/create_channel_first">
         <view class="item_content">
           <image class="item_img" src="../images/channel.png"></image>
-          <view class="text">频道</view>
+          <view class="text">清单</view>
         </view>
         <view class="arrow">&gt;</view>
       </navigator>

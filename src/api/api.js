@@ -1,5 +1,6 @@
 import {
-  wxRequest
+  wxRequest,
+  wxUpload
 } from '../utils/wxRequest';
 
 let env = "-test" //-dev 或者 -test
@@ -17,9 +18,20 @@ const getDiscoverList = (params) => wxRequest(params, apiMall + '/goods/list?cat
 const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/api/wechat/jscode2session");
 const user2session = (params) => wxRequest(params, apiMall + "/api/wechat/user2session?jsoncallback=?");
 
+//登录
 const login = (params) => wxRequest(params, apiMall + "/login");
 
+//获取清单
 const getOrg = (params) => wxRequest(params,apiMall + "/org/list");
+
+//上传图片
+const image = (params) => wxUpload(params,apiMall+'/user/img/upload'); 
+
+//创建清单
+const createChannel = (params) => wxRequest(params,apiMall + "/org/create");
+
+
+
 
 //商品接口---begin
 //首页发现商品接口
@@ -183,5 +195,7 @@ module.exports = {
   getAdList,
   getSignDate,
   login,
-  getOrg
+  getOrg,
+  image,
+  createChannel
 }
