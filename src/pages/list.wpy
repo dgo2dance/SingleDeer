@@ -48,6 +48,7 @@ export default class list extends wepy.page {
   config = {
     navigationBarTitleText: '独鹿交友',
   }
+
   components = {
     discover: Discover,
     bottomLoadMore: BottomLoadMore,
@@ -56,24 +57,49 @@ export default class list extends wepy.page {
     tab: Tab,
     singleItem: SingleItem
   }
+
   data = {
-
+    orgId:"",
     singleList: [],
-    tabList: ["简介", "成员","讨论"],
-
-
+    tabList: ["简介", "成员","讨论"]
   }
-   // 登录时加载项
-  onLoad() {
 
+  //根据ID获取清单图片  名字等；
+  async getOrg() {
+    
+    let that = this;
+    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
+    let userInfo = wepy.getStorageSync(USER_INFO) || {};
+    let openId = userSpecialInfo.openid;
+    const json = await api.getOrg({
+      query: {
+        openid:openId,
+        id:orgId
+      }
+    });
+
+    console.log("getAdList："+JSON.stringify(json));
+
+    if (json.data.code == 0) {
+      this.adList = json.data.data;
+      this.$apply();
+    } 
+  }
+
+
+
+   // 登录时加载项
+  onLoad(option) {
+    let that = this;
+    that.orgId = option.orderNo==undefined?"":option.orderNo;
+
+    that.getOrg();
   }
 
   computed = {}
-  methods = {
-  }
+  methods = {}
   events = {
 
-     
   }
 
 
