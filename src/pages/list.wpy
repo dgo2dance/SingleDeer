@@ -83,10 +83,10 @@ export default class list extends wepy.page {
 </script>
 <style lang="less">
 
-  .constainer{
+  .container{
   padding: 10rpx 0rpx;
-  background: #f7f7f7;
-
+  background: #0099cc;
+  height:298rpx;
   .item_left {
         margin-left: 10rpx;
         padding-top: 5rpx;
