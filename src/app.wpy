@@ -28,6 +28,8 @@ export default class extends wepy.app {
       'pages/create_channel_first',
       'pages/create_channel_second',
       'pages/list',
+      'pages/org_detail',
+
 
 
       'pages/problems',
@@ -70,7 +72,7 @@ export default class extends wepy.app {
     },
     "tabBar": {
       "color": "#999999",
-      "selectedColor": "#ff6a3c",
+      "selectedColor": "#66cccc",
       "backgroundColor": "#ffffff",
       "borderStyle": "black",
       "list": [{

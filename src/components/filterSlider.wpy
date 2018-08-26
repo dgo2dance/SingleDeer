@@ -14,14 +14,10 @@
                       </view>
                     </view>-->
       <view class="block">
-        <view class="title">尺码</view>
+        <view class="title">性别</view>
         <view class="item_box">
-          <view class="item" data-sku="XS" @tap.stop="selSKU">XS</view>
-          <view class="item" data-sku="S" @tap.stop="selSKU">S</view>
-          <view class="item" data-sku="M" @tap.stop="selSKU">M</view>
-          <view class="item" data-sku="L" @tap.stop="selSKU">L</view>
-          <view class="item" data-sku="XL" @tap.stop="selSKU">XL</view>
-          <view class="item" data-sku="XXL" @tap.stop="selSKU">XXL</view>
+          <view class="item" data-sku="XS" @tap.stop="selSKU">女</view>
+          <view class="item" data-sku="S" @tap.stop="selSKU">男</view>
         </view>
       </view>
       <view class="btn_group">

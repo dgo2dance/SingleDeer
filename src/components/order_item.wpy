@@ -3,7 +3,7 @@
 <view class="order_item">
 <repeat for="{{orderList}}">
   <view class="list" wx:key="index">
-    <navigator class="flex item" url="/pages/list?orderNo={{item.orderNo}}">
+    <navigator class="flex item" url="/pages/org_detail?code={{item.id}}">
 
 
             <view class="item_left">
@@ -191,7 +191,7 @@ export default class orderItem extends wepy.component {
       }
 
       .item_middle .title {
-          font-size: 38rpx;
+          font-size: 35rpx;
           color: #333;
       }
       .item_middle .sub_title {
@@ -273,8 +273,8 @@ export default class orderItem extends wepy.component {
   }
   .list {
     background: #fff;
-    padding: 30rpx;
-    margin-top: 15rpx;
+    padding: 40rpx 10rpx 0rpx 0rpx;
+
   }
   .btn_group {
     display: flex;

@@ -4,7 +4,7 @@
     <view class="shop_item">
       <navigator class="list" wx:for="{{list}}" wx:key="item" url="/pages/goods_detail?id={{item.id}}&purchasetype={{purchasetype}}&special={{special}}">
         <view class="image_box">
-          <image src="{{item.thumLogo}}"></image>
+          <image src="{{item.avatarUrl}}"></image>
         </view>
         <view class="goods">
           <view class="product_name" wx:if="{{showTitle}}">{{item.name}}</view>
@@ -64,7 +64,7 @@ export default class ShopGridList extends wepy.component {
 
 .list {
   background: #fff;
-  width: 355rpx;
+  width: 100%;
   margin-top: 15rpx;
   .image_box {
     image {

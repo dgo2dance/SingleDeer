@@ -108,15 +108,15 @@ export default class Filter extends wepy.component {
 }
 
 .swiper-tab-list {
-  font-size: 30rpx;
+  font-size: 35rpx;
   color: #777777;
   padding: 0 20rpx;
   position: relative;
 }
 
 .active {
-  color: #eb6623;
-  border-bottom: 5rpx solid #eb6623;
+  color: #48d1cc;
+  border-bottom: 5rpx solid #48d1cc;
 }
 
 .swiper-box {

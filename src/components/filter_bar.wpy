@@ -2,16 +2,20 @@
 <template>
   <view class="bar">
     <view class="filter">
-      <view class="nav {{currentType=='zonghe' ? 'nav_active' : ''}}" data-current="zonghe" @tap="orderBy">综合</view>
+      <view class="nav {{currentType=='zonghe' ? 'nav_active' : ''}}" data-current="zonghe" @tap="orderBy">清单</view>
+      
+      <!--
       <view class="nav  {{currentType=='sale' ? 'nav_active' : ''}}" data-current="sale" @tap="orderBy">销量</view>
       <view class="grid nav">
         <view class="price {{currentType=='price' ? 'nav_active' : ''}}" data-current="price" @tap.stop="orderBy">价格</view>
         <view>
           <view class="arrow_up {{arrowType=='desc' ? 'arrow_up_red' : 'arrow_up_gray'}}"></view>
-          <!-- 向下的三角形 -->
           <view class="arrow_down {{arrowType=='asc' ? 'arrow_down_red' : 'arrow_down_gray'}} "></view>
         </view>
+    
       </view>
+        -->
+
       <view class="nav" @tap="filterSearch">筛选<i class="iconfont icon-filter"></i></view>
     </view>
     <!--筛选测栏-->

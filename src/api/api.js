@@ -24,11 +24,16 @@ const login = (params) => wxRequest(params, apiMall + "/login");
 //获取清单
 const getOrg = (params) => wxRequest(params,apiMall + "/org/list");
 
+const getOrgById = (params) => wxRequest(params,apiMall + "/org/select");
+
 //上传图片
 const image = (params) => wxUpload(params,apiMall+'/user/img/upload'); 
 
 //创建清单
 const createChannel = (params) => wxRequest(params,apiMall + "/org/create");
+
+//获取清单人员列表
+const orgPersonList = (params) => wxRequest(params,apiMall+"/org/user/list")
 
 
 
@@ -197,5 +202,7 @@ module.exports = {
   login,
   getOrg,
   image,
-  createChannel
+  createChannel,
+  getOrgById,
+  orgPersonList
 }
